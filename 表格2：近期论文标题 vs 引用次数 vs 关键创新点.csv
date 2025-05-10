@@ -1,0 +1,37 @@
+表格2：近期论文标题 vs 引用次数 vs 关键创新点
+字段说明：
+
+论文标题：论文的名称。
+
+引用次数：论文被引用的次数。
+
+关键创新点：论文的主要创新内容。
+CSDN博客
++2
+Python documentation
++2
+Python documentation
++2
+
+示例数据：
+
+论文标题	引用次数	关键创新点
+Attention Is All You Need	5000	提出 Transformer 架构
+BERT: Pre-training of Deep Bidirectional Transformers	4500	引入双向编码器表示
+RoBERTa: A Robustly Optimized BERT Pretraining Approach	3000	改进 BERT 的预训练方法
+GPT-3: Language Models are Few-Shot Learners	4000	展示大规模语言模型的强大能力
+
+生成代码：
+
+python
+复制
+编辑
+data2 = [
+    {"论文标题": "Attention Is All You Need", "引用次数": 5000, "关键创新点": "提出 Transformer 架构"},
+    {"论文标题": "BERT: Pre-training of Deep Bidirectional Transformers", "引用次数": 4500, "关键创新点": "引入双向编码器表示"},
+    {"论文标题": "RoBERTa: A Robustly Optimized BERT Pretraining Approach", "引用次数": 3000, "关键创新点": "改进 BERT 的预训练方法"},
+    {"论文标题": "GPT-3: Language Models are Few-Shot Learners", "引用次数": 4000, "关键创新点": "展示大规模语言模型的强大能力"},
+]
+
+df2 = pd.DataFrame(data2)
+df2.to_csv("data/table2.csv", index=False)

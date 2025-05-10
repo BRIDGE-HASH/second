@@ -1,0 +1,35 @@
+表格1：主要玩家 vs 发布模型 & 参数规模 & 发布时间
+字段说明：
+
+公司名称：如 OpenAI、Google DeepMind 等。
+
+模型名称：如 GPT-4、Gemini 等。
+
+参数规模（亿）：模型的参数数量，单位为亿。
+
+发布时间：模型发布的日期。
+
+示例数据：
+
+公司名称	模型名称	参数规模（亿）	发布时间
+OpenAI	GPT-4	1750	2023-03-14
+Google DeepMind	Gemini	1000	2023-06-01
+Meta	LLaMA 2	650	2023-07-18
+Anthropic	Claude 2	520	2023-08-15
+
+生成代码：
+
+python
+复制
+编辑
+import pandas as pd
+
+data1 = [
+    {"公司名称": "OpenAI", "模型名称": "GPT-4", "参数规模（亿）": 1750, "发布时间": "2023-03-14"},
+    {"公司名称": "Google DeepMind", "模型名称": "Gemini", "参数规模（亿）": 1000, "发布时间": "2023-06-01"},
+    {"公司名称": "Meta", "模型名称": "LLaMA 2", "参数规模（亿）": 650, "发布时间": "2023-07-18"},
+    {"公司名称": "Anthropic", "模型名称": "Claude 2", "参数规模（亿）": 520, "发布时间": "2023-08-15"},
+]
+
+df1 = pd.DataFrame(data1)
+df1.to_csv("data/table1.csv", index=False)

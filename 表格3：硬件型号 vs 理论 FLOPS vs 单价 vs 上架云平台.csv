@@ -1,0 +1,28 @@
+表格3：硬件型号 vs 理论 FLOPS vs 单价 vs 上架云平台
+字段说明：
+
+硬件型号：如 NVIDIA A100 等。
+
+理论 FLOPS（TFLOPS）：硬件的理论计算性能，单位为 TFLOPS。
+
+单价（美元）：硬件的价格。
+
+上架云平台：提供该硬件的云平台。
+zh.wikipedia.org
+
+示例数据：
+
+硬件型号	理论 FLOPS（TFLOPS）	单价（美元）	上架云平台
+NVIDIA A100	312	11000	AWS, Google Cloud
+NVIDIA H100	500	15000	Azure, AWS
+TPU v4	275	8000	Google Cloud
+AMD MI250X	383	9000	Azure
+data3 = [
+    {"硬件型号": "NVIDIA A100", "理论 FLOPS（TFLOPS）": 312, "单价（美元）": 11000, "上架云平台": "AWS, Google Cloud"},
+    {"硬件型号": "NVIDIA H100", "理论 FLOPS（TFLOPS）": 500, "单价（美元）": 15000, "上架云平台": "Azure, AWS"},
+    {"硬件型号": "TPU v4", "理论 FLOPS（TFLOPS）": 275, "单价（美元）": 8000, "上架云平台": "Google Cloud"},
+    {"硬件型号": "AMD MI250X", "理论 FLOPS（TFLOPS）": 383, "单价（美元）": 9000, "上架云平台": "Azure"},
+]
+
+df3 = pd.DataFrame(data3)
+df3.to_csv("data/table3.csv", index=False)
