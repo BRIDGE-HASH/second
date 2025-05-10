@@ -1,0 +1,145 @@
+#说明我用的是jupyter进行代码运行这段代码的核心功能是：自动化获取特定品牌的新闻信息，并利用 GPT-4 模型进行情感分析和关键词提取。
+
+核心逻辑分解
+新闻数据抓取：
+
+使用 SerpAPI 的 Google News 引擎，搜索与指定品牌（如“特斯拉”）相关的新闻。
+
+通过设置参数（如搜索关键词、结果数量等），获取最新的新闻结果。
+
+情感分析与关键词提取：
+
+调用 OpenAI 的 GPT-4 模型，对每条新闻的描述进行分析。
+
+提取出新闻的主题关键词，并判断其情感倾向（正面、负面或中性）。
+
+结果输出：
+
+将每条新闻的日期和分析结果打印输出，便于用户查看。
+
+
+模块说明
+SerpAPI：用于从 Google News 获取新闻数据。
+
+OpenAI GPT-4：用于对新闻内容进行自然语言处理，提取关键词并分析情感。
+
+环境变量：通过设置 SERPAPI_KEY 和 OPENAI_API_KEY，确保 API 调用的安全性和灵活性。
+
+应用场景
+品牌舆情监控：自动收集并分析品牌相关的新闻，了解公众情绪。
+
+市场研究：获取竞争对手的最新动态，并进行情感分析。
+
+内容策划：根据新闻热点和情感倾向，制定内容创作策略。
+
+
+
+
+
+!pip install requests openai
+
+
+
+
+# 通过 Jupyter 自带的 %env 魔法，确保变量对后续所有单元格生效
+%env SERPAPI_KEY=在此填入_你的_真实_SerpApi_Key
+%env OPENAI_API_KEY=在此填入_你的_OpenAI_Key
+
+
+
+
+import os
+
+key = os.getenv("SERPAPI_KEY")
+print("SERPAPI_KEY repr:", repr(key))
+print("Length       :", len(key) if key else None)
+
+if not key:
+    print("❌ SERPAPI_KEY 未设置，请返回单元格 2 重新设置！")
+elif len(key) < 20 or " " in key:
+    print("⚠️ SERPAPI_KEY 看起来不正确，请检查复制粘贴是否完整且无多余空格")  # 长度至少20位以上
+else:
+    print("✅ SERPAPI_KEY 格式正常，可进行下一步")
+
+
+
+
+
+
+import requests, json, openai, os
+
+# 先验证拉取新闻是否能成功
+params = {
+    "engine":  "google_news",
+    "q":       "特斯拉",                   # 测试用热门关键词
+    "num":     5,
+    "api_key": os.getenv("SERPAPI_KEY")    # 一定要这里传入
+}
+r = requests.get("https://serpapi.com/search", params=params)
+print("HTTP 状态码：", r.status_code)
+print("接口返回示例：", r.json())            # 正确情况下应包含 "news_results" 字段:contentReference[oaicite:2]{index=2}
+
+# 若上面返回200且有 news_results，再做简单分析示例
+if r.status_code == 200 and "news_results" in r.json():
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    def analyze(text: str) -> dict:
+        resp = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[{"role":"user","content":f"提取关键词并判断情感：{text}"}],
+            max_tokens=80,
+            temperature=0
+        )
+        return json.loads(resp.choices[0].message.content)
+    
+    news = r.json()["news_results"]
+    print(f"共抓取到 {len(news)} 条新闻，开始分析：")
+    for item in news:
+        desc = item.get("description","").strip()
+        if desc:
+            print("—", analyze(desc))
+
+
+
+
+
+
+import requests, os
+
+params = {
+    "engine":  "google_news",
+    "q":       "特斯拉",
+    "num":     5,
+    "api_key": os.getenv("SERPAPI_KEY")   # 必须在这里传入私钥
+}
+
+r = requests.get("https://serpapi.com/search", params=params)
+print("HTTP 状态码：", r.status_code)
+print("响应 JSON：", r.json())
+
+
+
+
+
+
+
+#拉取新闻并调用 OpenAI 分析
+import openai, json
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+def analyze(text: str) -> dict:
+    resp = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role":"user","content":f"提取关键词并判断情感：{text}"}],
+        max_tokens=80,
+        temperature=0
+    )
+    return json.loads(resp.choices[0].message.content)
+
+# 使用已验证的 fetch
+news = r.json().get("news_results", [])
+print(f"共获取到 {len(news)} 条新闻")
+for item in news:
+    date = item.get("date","")
+    desc = item.get("description","").strip()
+    if desc:
+        print(f"{date} →", analyze(desc))
